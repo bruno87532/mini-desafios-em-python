@@ -24,27 +24,12 @@ def adicionaPessoa():
     if not request.data:
         abort(400, "Dados insuficientes")
     pessoa = request.get_json()
-    print(pessoa)
-    pessoaFisica = ["nome", "endereco", "contato", "cpf", "dataNascimento"]
-    if "cpf" in pessoa.keys():
-        for i in pessoaFisica:
-            if not(i in pessoa and pessoa[i]):
-                abort(400, "Dados insuficientes")
-        pessoaFisica = PessoaFisica(pessoa["nome"], pessoa["endereco"], pessoa["contato"], pessoa["cpf"], pessoa["dataNascimento"])
-        pessoas.append(pessoaFisica)
-        return jsonify({"id": pessoaFisica.id, "url": f"/api/pessoas/{pessoaFisica.id}"})
-    pessoaJuridica = ["nome", "endereco", "contato", "cnpj", "razaoSocial"]
-    if "cnpj" in pessoa.keys():
-        for i in pessoaJuridica:
-            if not(i in pessoa and pessoa[i]):
-                abort(400, "Dados insuficientes")
-        pessoaJuridica = PessoaJuridica(pessoa["nome"], pessoa["endereco"], pessoa["contato"], pessoa["cnpj"], pessoa["razaoSocial"])
-        pessoas.append(pessoaJuridica)
-        return jsonify({"id": pessoaJuridica.id, "url": f"/api/pessoas/{pessoaJuridica.id}"})
-    pessoaTemporaria = ["nome", "endereco", "contato"]
-    for i in pessoaTemporaria:
-        if not(i in pessoa and pessoa[i]):
-                abort(400, "Dados insuficientes")
-        pessoaProjeto = Pessoa(pessoa["nome"], pessoa["endereco"], pessoa["contato"])
-        pessoas.append(pessoaProjeto)
-        return jsonify({"id": pessoaProjeto.id, "url": f"/api/pessoas/{pessoaProjeto.id}"})
+    if "cpf" in pessoa:
+        tipoPessoa = PessoaFisica
+    elif "cnpj" in pessoa:
+        tipoPessoa = PessoaJuridica
+    else:
+        tipoPessoa = Pessoa
+    novaPessoa = tipoPessoa.adicionaPessoa(pessoa)
+    pessoas.append(novaPessoa)
+    return jsonify({"id": novaPessoa.id, "url": f"/api/pessoas/{novaPessoa.id}/"})

@@ -13,3 +13,10 @@ class Pessoa:
             if id == i.id:
                 return i
         abort(404, "Página não encontrada")
+    @classmethod
+    def adicionaPessoa(cls, pessoa):
+        campos = ["nome", "endereco", "contato"]
+        if not all(campo in pessoa.keys() and pessoa[campo] for campo in campos):
+            abort(400, "Dados insuficientes")
+        novaPessoa = cls(pessoa["nome"], pessoa["endereco"], pessoa["contato"])
+        return novaPessoa
