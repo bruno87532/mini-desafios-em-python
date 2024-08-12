@@ -17,7 +17,7 @@ def exibePessoas():
     return jsonify(listaPessoas)
 @servidor.route("/api/pessoas/<int:id>/")
 def detalhaPessoa(id):
-    pessoa = Pessoa.localiza_pessoa(id, pessoas)
+    pessoa = Pessoa.localizaPessoa(id, pessoas)
     return jsonify(pessoa.__dict__)
 @servidor.route("/api/pessoas/", methods=["POST"])
 def adicionaPessoa():
@@ -33,3 +33,23 @@ def adicionaPessoa():
     novaPessoa = tipoPessoa.adicionaPessoa(pessoa)
     pessoas.append(novaPessoa)
     return jsonify({"id": novaPessoa.id, "url": f"/api/pessoas/{novaPessoa.id}/"})
+@servidor.route("/api/pessoas/<int:id>", methods=["POST"])
+def deletaPessoa(id):
+    pessoa = Pessoa.localizaPessoa(id, pessoas)
+    pessoas.remove(pessoa)
+@servidor.route("/api/pessoas/<int:id>", methods=["PUT"])
+def editaPessoa(id):
+    if not request.data:
+        abort(400, "Dados insuficientes")
+    dados = request.get_json()
+    pessoa = Pessoa.localizaPessoa(id, pessoas)
+    pessoa.editaPessoa(dados)
+    return jsonify(pessoa.__dict__)
+@servidor.route("/api/pessoas/<int:id>", methods=["PATCH"])
+def editaPessoaParcial(id):
+    if not request.data:
+        abort(400, "Dados insuficientes")
+    dados = request.get_json()
+    pessoa = Pessoa.localizaPessoa(id, pessoas)
+    pessoa.editaPessoaParcial(dados)
+    return jsonify(pessoa.__dict__)

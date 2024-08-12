@@ -8,7 +8,7 @@ class Pessoa:
         self.contato = contato
         Pessoa._id_Contador += 1
     @staticmethod
-    def localiza_pessoa(id, listaPessoas):
+    def localizaPessoa(id, listaPessoas):
         for i in listaPessoas:
             if id == i.id:
                 return i
@@ -20,3 +20,16 @@ class Pessoa:
             abort(400, "Dados insuficientes")
         novaPessoa = cls(pessoa["nome"], pessoa["endereco"], pessoa["contato"])
         return novaPessoa
+    def editaPessoa(self, dados):
+        campos = ["nome", "endereco", "contato"]
+        if not all(campo in dados.keys() and dados[campo] for campo in campos):
+            abort(400, "Dados insuficentes")
+        for campo in campos:
+            setattr(self, campo, dados[campo])
+    def editaPessoaParcial(self, dados):
+        campos = [campo for campo in dados.keys()]
+        for campo in campos:
+            if campo != "nome" and campo != "contato" and campo != "endereco":
+                campos.remove(campo)
+        for campo in campos:
+            setattr(self, campo, dados[campo])
